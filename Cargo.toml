@@ -3,3 +3,7 @@
 name = "matrix"
 version = "0.0.1"
 authors = ["Jared Roesch <roeschinc@gmail.com>"]
+
+[[bin]]
+path = "src/examples/playground.rs"
+name = "playground"

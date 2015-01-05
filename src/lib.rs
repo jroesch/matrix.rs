@@ -3,14 +3,14 @@ use std::fmt::Show;
 use std::mem::size_of;
 
 #[derive(Show, PartialEq, Clone)]
-struct SMat<T> {
+pub struct SMat<T> {
     primary_index: Vec<uint>,
     secondary_index: Vec<uint>,
     data: Vec<T>
 }
 
 impl<T: Clone + Ord> SMat<T> {
-    fn new(pairs: &mut [(uint, uint, T)]) -> SMat<T> {
+    pub fn new(pairs: &mut [(uint, uint, T)]) -> SMat<T> {
         pairs.sort();
         let size_hint = pairs.len();
         let mut primary_index = Vec::with_capacity(size_hint);
@@ -34,10 +34,4 @@ impl<T: Clone + Ord> SMat<T> {
             data: data
         }
     }
-}
-
-#[test]
-fn test_matrix_construction() {
-    let mut data = Vec::new();
-    let smat: SMat<int> = SMat::new(data.as_mut_slice());
 }
