@@ -1,6 +1,9 @@
 #![feature(slicing_syntax)]
 use std::fmt::Show;
 use std::mem::size_of;
+use std::iter::IteratorExt;
+use std::ops::Mul;
+use std::ops::Add;
 
 #[derive(Show, PartialEq, Clone)]
 pub struct SMat<T> {
@@ -34,4 +37,19 @@ impl<T: Clone + Ord> SMat<T> {
             data: data
         }
     }
+}
+
+// TODO: use semiring
+fn mult<T: Mul, Add>(a: SMat<T>, b: Vec<T>) -> Vec<T> {
+    let mut product: Vec<T> = Vec::with_capacity(b.len());
+    for r in range(0, b.len()) {
+        // we iterate through indicies until we hit the end of the row
+        let row = a.primary_index[r];
+        let next_row = if r == b.len() - 1 { a.secondary_index.len() } else { a.primary_index[r+1] };
+
+        product.push(range(row, next_row).fold(0, |acc, ind| {
+            acc += a.data[ind] * b[a.secondary_index[ind]]
+        }));
+    }
+    product
 }
