@@ -20,8 +20,9 @@ impl<T: Clone + Ord> SMat<T> {
 
         let mut row = 0;
         for &(row_index, column_index, ref elem) in pairs.iter() {
-            if row_index != row {
+            while row_index != row {
                 primary_index.push(secondary_index.len());
+                row += 1;
             }
             secondary_index.push(column_index);
             data.push(elem.clone())
