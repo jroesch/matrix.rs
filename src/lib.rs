@@ -1,9 +1,53 @@
+#![feature(globs)]
 #![feature(slicing_syntax)]
 use std::fmt::Show;
 use std::mem::size_of;
 use std::iter::IteratorExt;
-use std::ops::Mul;
-use std::ops::Add;
+use std::ops::*;
+
+// dense matrix
+#[derive(Show, PartialEq, Clone)]
+pub struct Mat<T> {
+    data: Vec<T>,
+    rows: uint,
+    cols: uint
+}
+
+// simple dense representation for now
+// TODO: column major vs row major
+impl<T: Clone> Mat<T> {
+    pub fn new(cols: uint, rows: uint, data: Vec<T>) -> Mat<T> {
+        assert!(cols*rows == data.len());
+        Mat {
+            data: data,
+            rows: rows,
+            cols: cols
+        }
+    }
+}
+
+// indexing by [row, col]
+impl<T> Index<(uint, uint)> for Mat<T> {
+    fn index(&self, index: (uint, uint)) -> T {
+        self.data[index.0+self.rows*index.1]
+    }
+}
+
+
+fn Mult<T: Mul, Add>(a: Mat<T>, b: Mat<T>) -> Mat<T> {
+    assert!(a.rows == b.cols);
+    let mut res = Mat::new(a.cols, b.rows, Vec::with_capacity(a.cols*b.rows));
+    for i in range(0, res.rows) {
+        for j in range(0, res.cols) {
+            for k in range(0, b.rows) {
+                res
+            }
+        }
+    }
+}
+
+
+
 
 #[derive(Show, PartialEq, Clone)]
 pub struct SMat<T> {
@@ -12,6 +56,7 @@ pub struct SMat<T> {
     data: Vec<T>
 }
 
+// TODO: remove Ord dependency
 impl<T: Clone + Ord> SMat<T> {
     pub fn new(pairs: &mut [(uint, uint, T)]) -> SMat<T> {
         pairs.sort();
@@ -47,8 +92,8 @@ fn mult<T: Mul, Add>(a: SMat<T>, b: Vec<T>) -> Vec<T> {
         let row = a.primary_index[r];
         let next_row = if r == b.len() - 1 { a.secondary_index.len() } else { a.primary_index[r+1] };
 
-        product.push(range(row, next_row).fold(0, |acc, ind| {
-            acc += a.data[ind] * b[a.secondary_index[ind]]
+        product.push(range(row, next_row).fold(0i, |acc, ind| {
+            acc += a.data[ind] * b[a.secondary_index[ind]];
         }));
     }
     product
